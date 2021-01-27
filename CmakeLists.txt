@@ -1,0 +1,223 @@
+cmake_minimum_required(VERSION 3.14)
+
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+#set(CMAKE_CROSSCOMPILING 1)
+
+project(
+  openslide
+  VERSION 3.4.1
+  DESCRIPTION "Openslide"
+  LANGUAGES C
+)
+
+# add our local cmake directory
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+
+  # Let's nicely support folders in IDEs
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  include(CMakePackageConfigHelpers)
+  include(CMakeDependentOption)
+  include(CheckCXXCompilerFlag)
+  include(GNUInstallDirs)
+  # FetchContent added in CMake 3.11, downloads during the configure step
+  include(FetchContent)
+  # add FetchContent_MakeAvalailable
+  include(cmake/FetchContent_MakeAvailable.cmake)
+
+  # Testing only available if this is the main app
+  # Note this needs to be done in the main CMakeLists
+  # since it calls enable_testing, which must be in the
+  # main CMakeLists.
+  include(CTest)
+
+  # Docs only available if this is the main app
+  include(cmake/Fetch_doxygen.cmake)
+  fetch_doxygen()
+  if(Doxygen_FOUND)
+    add_subdirectory(doc)
+  else()
+    message(STATUS "Doxygen not found, not building docs")
+  endif()
+endif()
+
+# cmake_dependent_option(zlib_CPP_INSTALL
+#   "Enable generation of zlib-cpp install targets" OFF
+#   "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
+# message(STATUS "zlib_CPP_INSTALL " ${zlib_CPP_INSTALL})
+# fetch zlib
+include(cmake/Fetch_zlib.cmake) 
+# go and fetch the library
+# fetch_zlib_by_ver(v1.2.11)
+# set(ZLIB_SHARED_LIBRARY ${zlib_BINARY_DIR}/$<CONFIG>/zlib$<$<CONFIG:Debug>:d>${CMAKE_SHARED_LIBRARY_SUFFIX})
+# set(ZLIB_STATIC_LIBRARY ${zlib_BINARY_DIR}/$<CONFIG>/zlib$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+# set(ZLIB_LIBRARY ${ZLIB_STATIC_LIBRARY})
+# set(ZLIB_INCLUDE_DIR ${zlib_BINARY_DIR} ${zlib_SOURCE_DIR})
+#find_package(ZLIB REQUIRED)
+#target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+#add_subdirectory(${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
+#set(ZLIB_LIBRARY ${zlib_BINARY_DIR})
+#set(ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR})
+#find_package(ZLIB::ZLIB REQUIRED)
+#message(STATUS "zlib ${ZLIB_INCLUDE_DIRS}")
+#add include paths
+#set(linked_libs_private_includes ${zlib_SOURCE_DIR})
+#set(linked_libs_public_includes ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
+
+# fetch libzip
+include(cmake/Fetch_libzip.cmake) 
+# go and fetch the library
+#fetch_libzip()
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${libzip_SOURCE_DIR} ${libzip_BINARY_DIR})
+#find_package(libzip CONFIG REQUIRED)
+#target_link_libraries(main PRIVATE libzip::zip)
+
+# hack to force PNG NOT to look for a zlib prebuilt library
+# set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+# cmake_dependent_option(libpng_CPP_INSTALL
+#   "Enable generation of libpng-cpp install targets" OFF
+#   "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
+# message(STATUS "libpng_CPP_INSTALL " ${libpng_CPP_INSTALL})
+# fetch libpng
+include(cmake/Fetch_libpng.cmake) 
+# go and fetch the library
+# fetch_libpng_by_ver(v1.6.34)
+# set(PNG_SHARED_LIBRARY ${libpng_BINARY_DIR}/$<CONFIG>/libpng$<$<CONFIG:Debug>:d>${CMAKE_SHARED_LIBRARY_SUFFIX})
+# set(PNG_STATIC_LIBRARY ${libpng_BINARY_DIR}/$<CONFIG>/libpng$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+# set(PNG_LIBRARY ${PNG_STATIC_LIBRARY})
+# set(PNG_INCLUDE_DIR ${libpng_BINARY_DIR} ${libpng_SOURCE_DIR})
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${libpng_SOURCE_DIR} ${libpng_BINARY_DIR})
+#find_package(libpng CONFIG REQUIRED)
+#target_link_libraries(main PRIVATE png)
+
+# fetch libjpeg
+# cmake_dependent_option(libjpeg-turbo_CPP_INSTALL
+#   "Enable generation of libjpeg-turbo-cpp install targets" OFF
+#   "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
+# message(STATUS "libjpeg_CPP_INSTALL " ${libjpeg_CPP_INSTALL})
+include(cmake/Fetch_libjpeg-turbo.cmake) 
+# go and fetch the library
+# fetch_libjpeg_turbo_by_ver(2.0.6)
+# set(JPEG_SHARED_LIBRARY ${libjpeg-turbo_BINARY_DIR}/$<CONFIG>/jpeg$<$<CONFIG:Debug>:d>${CMAKE_SHARED_LIBRARY_SUFFIX})
+# set(JPEG_STATIC_LIBRARY ${libjpeg-turbo_BINARY_DIR}/$<CONFIG>/jpeg-static$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+# set(JPEG_LIBRARY ${JPEG_STATIC_LIBRARY})
+# set(JPEG_INCLUDE_DIR ${libjpeg-turbo_BINARY_DIR} ${libjpeg-turbo_SOURCE_DIR})
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${libjpeg_SOURCE_DIR} ${libjpeg_BINARY_DIR})
+#find_package(JPEG)
+#target_link_libraries(main PRIVATE ${JPEG_LIBRARIES})
+#target_include_directories(main PRIVATE ${JPEG_INCLUDE_DIR})
+
+# fetch glib
+# include(cmake/Fetch_glib.cmake) 
+# go and fetch the library
+#fetch_glib_by_ver(2.56.1)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${glib_SOURCE_DIR} ${glib_BINARY_DIR})
+#find_package(unofficial-glib CONFIG REQUIRED)
+# Note: 1 target(s) were omitted.
+#target_link_libraries(main PRIVATE unofficial::glib::gio unofficial::glib::glib unofficial::glib::gmodule unofficial::glib::gobject)
+
+# cmake_dependent_option(libtiff_CPP_INSTALL
+#   "Enable generation of libtiff-cpp install targets" OFF
+#   "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
+# message(STATUS "libtiff_CPP_INSTALL " ${libtiff_CPP_INSTALL})
+# cmake_dependent_option(libtiff_BUILD_TESTS
+#   "Enable generation of libtiff-cpp test targets" OFF
+#   "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
+# message(STATUS "libtiff_BUILD_TESTS " ${libtiff_BUILD_TESTS})
+# fetch libtiff
+include(cmake/Fetch_libtiff.cmake) 
+# go and fetch the library
+#message("ZLIB_LIBRARY : '" ${ZLIB_LIBRARY} "'")
+#fetch_libtiff_by_ver(v4.1.0)
+#find_package(TIFF REQUIRED)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${libtiff_SOURCE_DIR} ${libtiff_BINARY_DIR})
+#find_package(TIFF REQUIRED)
+
+# fetch openjpeg
+include(cmake/Fetch_openjpeg.cmake) 
+# go and fetch the library
+#fetch_openjpeg_by_ver(v2.3.1)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${openjpeg_SOURCE_DIR} ${openjpeg_BINARY_DIR})
+#find_package(OpenJPEG REQUIRED)
+#target_link_libraries(main PRIVATE openjp2)
+
+# fetch GDK-Pixbuf
+#include(cmake/Fetch_gdkpixbuf.cmake) 
+# go and fetch the library
+#fetch_gdkpixbuf_by_ver(2.42.2)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${gdk-pixbuf_SOURCE_DIR} ${gdk-pixbuff_BINARY_DIR})
+# ##### put a find package 
+#find_package(GDKPixBuf REQUIRED)
+#target_link_libraries(main PRIVATE ${GDKPIXBUF_LIBRARY})
+#target_include_directories(main PRIVATE ${GDKPIXBUF_INCLUDE_DIR})
+
+#target
+# fetch PIXMAN
+include(cmake/Fetch_pixman.cmake) 
+# go and fetch the library
+#fetch_pixman_by_tag(pixman-0.34.0)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${pixman_SOURCE_DIR} ${pixman_BINARY_DIR})
+#find_package(unofficial-pixman CONFIG REQUIRED)
+#target_link_libraries(main PRIVATE unofficial::pixman::pixman-1)
+
+# fetch win-iconv
+include(cmake/Fetch_iconv.cmake) 
+# go and fetch the library
+#fetch_iconv()
+# add library to linked libraries
+#set(linked_libs ${linked_libs} iconv)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${iconv_SOURCE_DIR} ${iconv_BINARY_DIR})
+find_package(Iconv REQUIRED)
+#target_link_libraries(main PRIVATE Iconv::Iconv)
+
+# fetch cairo
+include(cmake/Fetch_cairo.cmake) 
+# go and fetch the library
+#fetch_cairo()
+# add library to linked libraries
+#set(linked_libs ${linked_libs} cairo)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${cairo_SOURCE_DIR} ${cairo_BINARY_DIR})
+#find_package(Cairo REQUIRED)
+#target_link_libraries(main PRIVATE CAIRO_LIBRARY)
+
+# fetch sqlite
+include(cmake/Fetch_sqlite.cmake) 
+# go and fetch the library
+#fetch_sqlite()
+# add library to linked libraries
+#set(linked_libs ${linked_libs} sqlite)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${sqlite_SOURCE_DIR} ${sqlite_BINARY_DIR})
+#find_package(unofficial-sqlite3 CONFIG REQUIRED)
+#target_link_libraries(main PRIVATE unofficial::sqlite3::sqlite3)
+
+# fetch libxml2
+include(cmake/Fetch_libxml2.cmake) 
+# go and fetch the library
+#fetch_libxml2()
+# add library to linked libraries
+#set(linked_libs ${linked_libs} libxml2)
+#add include paths
+#set(linked_libs_private_includes ${linked_libs_private_includes} ${libxml2_SOURCE_DIR} ${libxml2_BINARY_DIR})
+#find_package(LibXml2 REQUIRED)
+#target_include_directories(main PRIVATE ${LIBXML2_INCLUDE_DIR})
+#target_link_libraries(main PRIVATE ${LIBXML2_LIBRARIES})
+
+
+add_subdirectory(src out)
+
+#add_subdirectory(tools)

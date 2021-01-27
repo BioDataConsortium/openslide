@@ -1,0 +1,42 @@
+{
+  "name": "openslide",
+  "version-string": "3.4.1",
+  "dependencies": [
+    {
+      "name": "libiconv"
+    },
+    {
+      "name": "zlib"
+    },
+    {
+      "name": "libzip"
+    },
+    {
+      "name": "libpng"
+    },
+    {
+      "name": "libjpeg-turbo"
+    },
+    {
+      "name": "tiff"
+    },
+    {
+      "name": "openjpeg"
+    },
+    {
+      "name": "gdk-pixbuf"
+    },
+    {
+      "name": "pixman"
+    },
+    {
+      "name": "cairo"
+    },
+    {
+      "name": "sqlite3"
+    },
+    {
+      "name": "libxml2"
+    }
+  ]
+}
